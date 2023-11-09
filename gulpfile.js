@@ -10,15 +10,12 @@ const uglify = require('gulp-uglify')
 const htmlmin = require('gulp-htmlmin')
 const babel = require('gulp-babel')
 const sass = require('gulp-sass')(require('node-sass'))
-const browserSync = require('browser-sync').create()
-const reload = browserSync.reload
-
 
 function TarefaSass(cb){
     gulp.src([
         './src/scss/**.scss'
     ])
-        .pipe(concat('lib.scss'))
+        .pipe(concat('libs.scss'))
         .pipe(sass())
         .pipe(gulp.dest('./src/css'))
     return cb()
@@ -31,7 +28,7 @@ function tarefaCss(cb){
         './lib/owl/dist/assets/owl.theme.default.css',
         './src/css/**.css'
     ])
-        .pipe(concat('lib.css'))
+        .pipe(concat('libs.css'))
         .pipe(cssmin())
         .pipe(rename(
             {suffix:".min"}
@@ -45,6 +42,15 @@ function tarefaCss(cb){
 
 //     ])
 // }
+
+function tarefasHTML(cb) {
+    gulp.src('./src/index.html')
+        .pipe(htmlmin({
+            collapseWhitespace: true
+        }))
+        .pipe(gulp.dest('./dist'))
+    return cb()
+}
 
 function tarefasJS() {
     return gulp.src(
@@ -67,6 +73,19 @@ function tarefasJS() {
 }
 
 
+function TransporteJS(cb){
+    gulp.src('./src/js/libs.min.js')
+        .pipe(gulp.dest('./dist/assets/js'))
+    return cb()
+}
+
+function TransporteCSS(cb){
+    gulp.src('./src/css/libs.min.css')
+        .pipe(gulp.dest('./dist/assets/css'))
+    return cb()
+}
+
+
 function end(cb) {
     console.log('Fim da operação')
     return cb()
@@ -83,6 +102,6 @@ exports.css = tarefaCss
 
 exports.js = tarefasJS
 
-const process = series(TarefaSass, tarefaCss, tarefasJS, end)
+const process = series(TarefaSass, tarefaCss, tarefasJS, tarefasHTML, TransporteCSS, TransporteJS, end)
 
 exports.default = process
