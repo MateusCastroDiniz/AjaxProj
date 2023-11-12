@@ -37,14 +37,9 @@ function tarefaCss(cb){
     return cb()
 }
 
-// function TarefasJs(cb){
-//     gulp.src([
-
-//     ])
-// }
 
 function tarefasHTML(cb) {
-    gulp.src('./src/index.html')
+    gulp.src('./src/**.html')
         .pipe(htmlmin({
             collapseWhitespace: true
         }))
